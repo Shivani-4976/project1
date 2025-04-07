@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>shivani raj's 3D Portfolio</title>
+    <title>Shivani Raj's 3D Portfolio</title>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
-   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -31,6 +32,200 @@
             z-index: -1;
         }
 
+        /* Enhanced Loader Styles */
+        .loader-option {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loader-option h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #88dac7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+        }
+
+        .option-buttons {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .option-btn {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .with-loader {
+            background: linear-gradient(90deg, #ff6b6b, #ffd166);
+            color: white;
+        }
+
+        .without-loader {
+            background: linear-gradient(90deg, #4ecdc4, #88dac7);
+            color: white;
+        }
+
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .option-btn:hover::before {
+            opacity: 1;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .option-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Loader Animation */
+        .loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #16213e;
+            z-index: 999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: #88dac7;
+            border-bottom-color: #ff6b6b;
+            animation: spin 1.5s linear infinite;
+            margin-bottom: 2rem;
+        }
+
+        .loader-text {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            opacity: 0;
+        }
+
+        .progress-bar {
+            width: 300px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #ff6b6b, #88dac7);
+            transition: width 0.3s ease;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Enhanced Initial Animation */
+        .initial-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #16213e;
+            z-index: 998;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .name-animation {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #88dac7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            opacity: 0;
+            transform: scale(0.8) translateY(50px);
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .tagline-animation {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 1rem;
+            opacity: 0;
+            transform: translateY(30px);
+            position: relative;
+            z-index: 2;
+        }
+
+        .animation-particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #88dac7);
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .animation-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid;
+            opacity: 0;
+            z-index: 1;
+        }
+
         /* Navigation */
         nav {
             position: fixed;
@@ -43,6 +238,8 @@
             z-index: 100;
             backdrop-filter: blur(10px);
             background-color: rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(-50px);
         }
 
         .logo {
@@ -120,6 +317,24 @@
             opacity: 0.9;
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       
         .action-buttons {
             display: flex;
             gap: 20px;
@@ -165,6 +380,12 @@
             background: rgba(255, 255, 255, 0.1);
             border-color: rgba(255, 255, 255, 0.5);
         }
+
+
+
+
+
+
 
         /* About Section */
         #about {
@@ -660,6 +881,36 @@
             box-shadow: 0 10px 20px rgba(255, 107, 107, 0.4);
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       
         .social-icons {
             display: flex;
             justify-content: center;
@@ -717,7 +968,47 @@
             font-size: 0.9rem;
         }
 
-        /* Responsive */
+        /* Floating cursor follower */
+        .cursor-follower {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(136, 218, 199, 0.3);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: screen;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+        }
+
+        .cursor-follower.active {
+            transform: translate(-50%, -50%) scale(1.5);
+            background: rgba(255, 107, 107, 0.4);
+        }
+
+        /* Astronaut model styles */
+        model-viewer {
+            width: 20%;
+            height: 40%; 
+            z-index: 12;
+            position: fixed;
+            top: 30%;
+            left: 5%;
+            animation: scrollMove 1s linear paused;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes scrollMove {
+            0% { transform: translate(0px,0px); }
+            10% { transform: translate(350%, 20%); }
+            50% { transform: translate(350%, 20%); } 
+            70% { transform: translate(-20%, 20%); }
+            80% { transform: translate(-20%, 20%); }
+            100% { transform: translate(350%, 20%); }
+        }
+
+              /* Responsive */
         @media (max-width: 992px) {
             .hero-text h1 {
                 font-size: 3rem;
@@ -779,9 +1070,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <div class="loader-option">
+        <h2>Welcome to Shivani Raj's Portfolio</h2>
+        <div class="option-buttons">
+            <button class="option-btn with-loader" id="withLoader">Experience with Loader</button>
+            <button class="option-btn without-loader" id="withoutLoader">Skip Loader</button>
+        </div>
+    </div>
+
+    <div class="loader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <div class="loader-text" id="loaderText">Loading Portfolio...</div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="initial-animation" id="initialAnimation">
+        <!-- Particles and circles will be added dynamically -->
+    </div>
+
+    <div class="cursor-follower"></div>
+
     <div id="canvas-container"></div>
-
-
 
    
   <model-viewer 
@@ -844,9 +1157,6 @@
 </script>
 
 
-
-
-   
     <nav>
         <a href="#" class="logo">Shivani's Portfolio</a>
         <div class="nav-links">
@@ -868,8 +1178,7 @@
             </div>
         </div>
     </section>
-
-    <section id="about">
+  <section id="about">
         <h2 class="section-title">About Me</h2>
         <div class="about-content">
             <div class="bio-card">
@@ -1083,7 +1392,7 @@
     </section>
 
     <footer>
-        <p>© 2023 Aanya's Portfolio. All rights reserved.</p>
+        <p>© 2023 Shivani's Portfolio. All rights reserved.</p>
     </footer>
 
     <script>
@@ -1199,43 +1508,267 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // Project Cube Interaction
-        const projectCube = document.getElementById('project-cube');
-        const projectFaces = document.querySelectorAll('.project-face');
-        
-        projectFaces.forEach((face, index) => {
-            face.addEventListener('click', () => {
-                // Calculate rotation to bring clicked face to front
-                let rotateY, rotateX = 0;
-                
-                switch(index) {
-                    case 0: rotateY = 0; break;
-                    case 1: rotateY = -90; break;
-                    case 2: rotateY = 180; break;
-                    case 3: rotateY = 90; break;
-                    case 4: rotateX = -90; break;
-                    case 5: rotateX = 90; break;
-                }
-                
-                projectCube.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
+        // Loader option selection
+        const withLoaderBtn = document.getElementById('withLoader');
+        const withoutLoaderBtn = document.getElementById('withoutLoader');
+        const loaderOption = document.querySelector('.loader-option');
+        const loader = document.querySelector('.loader');
+        const loaderText = document.getElementById('loaderText');
+        const progress = document.getElementById('progress');
+        const initialAnimation = document.getElementById('initialAnimation');
+        const content = document.querySelector('.content');
+        const nav = document.querySelector('nav');
+
+        // Create initial animation elements
+        function createInitialAnimation() {
+            // Create name element
+            const nameElement = document.createElement('div');
+            nameElement.className = 'name-animation';
+            nameElement.textContent = 'Shivani Raj';
+            initialAnimation.appendChild(nameElement);
+            
+            // Create tagline element
+            const taglineElement = document.createElement('div');
+            taglineElement.className = 'tagline-animation';
+            taglineElement.textContent = '3D Artist & Creative Developer';
+            initialAnimation.appendChild(taglineElement);
+            
+            // Create particles
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'animation-particle';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.width = `${Math.random() * 15 + 5}px`;
+                particle.style.height = particle.style.width;
+                initialAnimation.appendChild(particle);
+            }
+            
+            // Create circles
+            for (let i = 0; i < 5; i++) {
+                const circle = document.createElement('div');
+                circle.className = 'animation-circle';
+                circle.style.borderColor = i % 2 === 0 ? '#ff6b6b' : '#88dac7';
+                circle.style.width = `${Math.random() * 300 + 100}px`;
+                circle.style.height = circle.style.width;
+                circle.style.left = `${Math.random() * 100}%`;
+                circle.style.top = `${Math.random() * 100}%`;
+                initialAnimation.appendChild(circle);
+            }
+        }
+
+        // Cursor follower
+        const cursorFollower = document.querySelector('.cursor-follower');
+        document.addEventListener('mousemove', (e) => {
+            cursorFollower.style.left = e.clientX + 'px';
+            cursorFollower.style.top = e.clientY + 'px';
+        });
+
+        // Make elements interactive with cursor
+        const interactiveElements = document.querySelectorAll('button, a, .content');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorFollower.classList.add('active');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorFollower.classList.remove('active');
             });
         });
 
-        // Timeline Interaction
-        const timelineNodes = document.querySelectorAll('.timeline-node');
-        const timelineCards = document.querySelectorAll('.timeline-card');
-        
-        timelineNodes.forEach(node => {
-            node.addEventListener('mouseenter', () => {
-                const index = node.getAttribute('data-index');
-                timelineCards.forEach(card => card.classList.remove('active'));
-                document.querySelector(`.timeline-card[data-index="${index}"]`).classList.add('active');
+        // With loader option
+        withLoaderBtn.addEventListener('click', () => {
+            loaderOption.style.display = 'none';
+            loader.style.display = 'flex';
+            
+            // Simulate loading progress
+            let width = 0;
+            const interval = setInterval(() => {
+                width += Math.random() * 10;
+                progress.style.width = `${width}%`;
+                
+                if(width >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loader.style.opacity = '0';
+                        setTimeout(() => {
+                            loader.style.display = 'none';
+                            createInitialAnimation();
+                            startInitialAnimation();
+                        }, 500);
+                    }, 500);
+                }
+            }, 200);
+            
+            // Change loading text randomly
+            const loadingTexts = [
+                "Loading creative assets...",
+                "Preparing 3D environment...",
+                "Almost there...",
+                "Final touches..."
+            ];
+            
+            let textIndex = 0;
+            const textInterval = setInterval(() => {
+                loaderText.style.opacity = '0';
+                setTimeout(() => {
+                    textIndex = (textIndex + 1) % loadingTexts.length;
+                    loaderText.textContent = loadingTexts[textIndex];
+                    loaderText.style.opacity = '1';
+                }, 300);
+            }, 1500);
+            
+            setTimeout(() => {
+                clearInterval(textInterval);
+            }, 6000);
+        });
+
+        // Without loader option
+        withoutLoaderBtn.addEventListener('click', () => {
+            loaderOption.style.opacity = '0';
+            setTimeout(() => {
+                loaderOption.style.display = 'none';
+                createInitialAnimation();
+                startInitialAnimation();
+            }, 500);
+        });
+
+        // Enhanced initial animation
+        function startInitialAnimation() {
+            initialAnimation.style.display = 'flex';
+            
+            // Animate particles
+            const particles = document.querySelectorAll('.animation-particle');
+            particles.forEach(particle => {
+                gsap.fromTo(particle,
+                    { opacity: 0, scale: 0 },
+                    {
+                        opacity: 0.7,
+                        scale: 1,
+                        duration: 1.5,
+                        delay: Math.random() * 1,
+                        ease: 'power2.out'
+                    }
+                );
+                
+                // Floating animation
+                gsap.to(particle, {
+                    x: `${(Math.random() - 0.5) * 100}`,
+                    y: `${(Math.random() - 0.5) * 100}`,
+                    duration: Math.random() * 5 + 5,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: 'sine.inOut'
+                });
             });
             
-            node.addEventListener('mouseleave', () => {
-                const index = node.getAttribute('data-index');
-                document.querySelector(`.timeline-card[data-index="${index}"]`).classList.remove('active');
+            // Animate circles
+            const circles = document.querySelectorAll('.animation-circle');
+            circles.forEach(circle => {
+                gsap.fromTo(circle,
+                    { opacity: 0, scale: 0 },
+                    {
+                        opacity: 0.3,
+                        scale: 1,
+                        duration: 2,
+                        delay: Math.random() * 1.5,
+                        ease: 'elastic.out(1, 0.5)'
+                    }
+                );
+                
+                // Rotating animation
+                gsap.to(circle, {
+                    rotation: 360,
+                    duration: Math.random() * 30 + 30,
+                    repeat: -1,
+                    ease: 'none'
+                });
             });
+            
+            // Animate name
+            gsap.to('.name-animation', {
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                duration: 1.5,
+                ease: 'elastic.out(1, 0.5)',
+                delay: 0.3
+            });
+            
+            // Animate tagline
+            gsap.to('.tagline-animation', {
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                ease: 'power3.out',
+                delay: 0.8
+            });
+            
+            // Hide initial animation after delay
+            setTimeout(() => {
+                // Animate out particles and circles
+                gsap.to('.animation-particle, .animation-circle', {
+                    opacity: 0,
+                    scale: 0,
+                    duration: 0.8,
+                    ease: 'power2.in'
+                });
+                
+                // Animate out text
+                gsap.to('.name-animation, .tagline-animation', {
+                    opacity: 0,
+                    scale: 0.8,
+                    duration: 0.8,
+                    ease: 'power2.in',
+                    onComplete: () => {
+                        initialAnimation.style.display = 'none';
+                        showContent();
+                    }
+                });
+            }, 3000);
+        }
+
+        // Show main content
+        function showContent() {
+            // Animate in navigation
+            gsap.to(nav, {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power2.out'
+            });
+            
+            // Animate astronaut scroll effect
+            const mover = document.querySelector('.mover');
+            window.addEventListener('scroll', () => {
+                const scrollTop = window.scrollY;
+                const maxScroll = document.body.scrollHeight - window.innerHeight;
+                const scrollPercent = scrollTop / maxScroll;
+
+                // Control animation progress
+                mover.style.animationPlayState = 'paused';
+                mover.style.animationDelay = `-${scrollPercent * 1}s`;
+            });
+        }
+
+        // Interactive floating objects
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            const mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+            
+            objects.forEach((obj, i) => {
+                gsap.to(obj.position, {
+                    x: obj.userData.originalX + mouseX * 0.5,
+                    y: obj.userData.originalY + mouseY * 0.5,
+                    duration: 1.5,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Store original positions for interactive movement
+        objects.forEach(obj => {
+            obj.userData.originalX = obj.position.x;
+            obj.userData.originalY = obj.position.y;
         });
 
         // Smooth scrolling for navigation
@@ -1248,12 +1781,6 @@
                 });
             });
         });
-
-        // Download button
-        document.querySelector('.download-btn').addEventListener('click', () => {
-            alert('Resume download would start here in a real implementation!');
-        });
     </script>
-
 </body>
 </html>
