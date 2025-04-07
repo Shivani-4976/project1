@@ -783,7 +783,6 @@
 
 
 
-
    
   <model-viewer 
     src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
@@ -828,6 +827,26 @@
 }
 </style>
 
+
+
+<script>
+  const mover = document.querySelector('.mover');
+
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const maxScroll = document.body.scrollHeight - window.innerHeight;
+    const scrollPercent = scrollTop / maxScroll;
+
+    // Control animation progress
+    mover.style.animationPlayState = 'paused';
+    mover.style.animationDelay = `-${scrollPercent * 1}s`;
+  });
+</script>
+
+
+
+
+   
     <nav>
         <a href="#" class="logo">Shivani's Portfolio</a>
         <div class="nav-links">
@@ -919,7 +938,7 @@
 
 
                
-                <div class="project-card">
+                               <div class="project-card">
                     <img src="project1.jpg" alt="project1">
                     <div class="project-info">
                         <h3>college website</h3>
@@ -936,6 +955,7 @@
                         </div>
                     </div>
                 </div>
+
 
 
 
@@ -1234,5 +1254,6 @@
             alert('Resume download would start here in a real implementation!');
         });
     </script>
+
 </body>
 </html>
